@@ -44,6 +44,8 @@ document
 .getElementById("capa")
 .addEventListener("change", (e) => {
 
+    console.log("CAPA SELECIONADA");
+
     const file = e.target.files[0];
 
     if (!file) return;
@@ -259,7 +261,7 @@ document
 
         const templateCapa =
             await loadImage(
-                "assets/capa.png"
+                "assets/equipe.png"
             );
 
         const canvasCapa =
