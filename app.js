@@ -1,132 +1,270 @@
+let cropperCapa;
+let cropperArtilheiro;
+
 function loadImage(src) {
-    return new Promise((resolve) => {
+    return new Promise((resolve, reject) => {
+
         const img = new Image();
+
         img.onload = () => resolve(img);
+
+        img.onerror = reject;
+
         img.src = src;
     });
 }
 
-function loadUserImage(file) {
-    return new Promise((resolve) => {
-        const reader = new FileReader();
+function downloadCanvas(canvas, nome) {
 
-        reader.onload = (e) => {
-            const img = new Image();
-
-            img.onload = () => resolve(img);
-
-            img.src = e.target.result;
-        };
-
-        reader.readAsDataURL(file);
-    });
-}
-
-function downloadCanvas(canvas, filename) {
     const link = document.createElement("a");
 
-    link.download = filename;
+    link.download = nome;
+
     link.href = canvas.toDataURL("image/png");
 
     link.click();
 }
 
-document.getElementById("gerar").addEventListener("click", async () => {
+document
+.getElementById("capa")
+.addEventListener("change", (e) => {
 
-    const capaFile =
-        document.getElementById("capa").files[0];
+    const file = e.target.files[0];
 
-    const artilheiroFile =
-        document.getElementById("artilheiro").files[0];
+    if (!file) return;
 
-    if (!capaFile || !artilheiroFile) {
-        alert("Selecione as duas imagens");
-        return;
+    const img =
+        document.getElementById("previewCapa");
+
+    img.src =
+        URL.createObjectURL(file);
+
+    img.style.display =
+        "block";
+
+    img.onload = () => {
+
+        if (cropperCapa)
+            cropperCapa.destroy();
+
+        cropperCapa =
+            new Cropper(img, {
+
+                aspectRatio: 1,
+
+                viewMode: 1,
+
+                dragMode: "move",
+
+                autoCropArea: 1,
+
+                responsive: true
+
+            });
+
+    };
+
+});
+
+document
+.getElementById("artilheiro")
+.addEventListener("change", (e) => {
+
+    const file = e.target.files[0];
+
+    if (!file) return;
+
+    const img =
+        document.getElementById("previewArtilheiro");
+
+    img.src =
+        URL.createObjectURL(file);
+
+    img.style.display =
+        "block";
+
+    img.onload = () => {
+
+        if (cropperArtilheiro)
+            cropperArtilheiro.destroy();
+
+        cropperArtilheiro =
+            new Cropper(img, {
+
+                aspectRatio: 1,
+
+                viewMode: 1,
+
+                dragMode: "move",
+
+                autoCropArea: 1,
+
+                responsive: true
+
+            });
+
+    };
+
+});
+
+document
+.getElementById("gerar")
+.addEventListener("click", async () => {
+
+    try {
+
+        if (!cropperCapa || !cropperArtilheiro) {
+
+            alert(
+                "Selecione as duas imagens."
+            );
+
+            return;
+        }
+
+        const gols =
+            document
+            .getElementById("gols")
+            .value;
+
+        // ======================
+        // CAPA
+        // ======================
+
+        const templateCapa =
+            await loadImage(
+                "assets/equipe.png"
+            );
+
+        const canvasCapa =
+            document.createElement(
+                "canvas"
+            );
+
+        canvasCapa.width =
+            templateCapa.width;
+
+        canvasCapa.height =
+            templateCapa.height;
+
+        const ctxCapa =
+            canvasCapa.getContext("2d");
+
+        const fotoCapa =
+            cropperCapa
+            .getCroppedCanvas({
+                width: 820,
+                height: 820
+            });
+
+        ctxCapa.drawImage(
+            fotoCapa,
+            130,
+            130
+        );
+
+        ctxCapa.drawImage(
+            templateCapa,
+            0,
+            0
+        );
+
+        downloadCanvas(
+            canvasCapa,
+            "capa_final.png"
+        );
+
+        // ======================
+        // ARTILHEIRO
+        // ======================
+
+        const templateArt =
+            await loadImage(
+                "assets/artilheiro.png"
+            );
+
+        const canvasArt =
+            document.createElement(
+                "canvas"
+            );
+
+        canvasArt.width =
+            templateArt.width;
+
+        canvasArt.height =
+            templateArt.height;
+
+        const ctxArt =
+            canvasArt.getContext("2d");
+
+        const fotoArt =
+            cropperArtilheiro
+            .getCroppedCanvas({
+                width: 885,
+                height: 885
+            });
+
+        ctxArt.drawImage(
+            fotoArt,
+            95,
+            245
+        );
+
+        ctxArt.drawImage(
+            templateArt,
+            0,
+            0
+        );
+
+        const texto =
+            Number(gols) === 1
+            ? "1 GOL"
+            : `${gols} GOLS`;
+
+        ctxArt.font =
+            "bold 80px Arial";
+
+        ctxArt.fillStyle =
+            "#FFFFFF";
+
+        ctxArt.strokeStyle =
+            "#000000";
+
+        ctxArt.lineWidth =
+            8;
+
+        ctxArt.textAlign =
+            "center";
+
+        ctxArt.strokeText(
+            texto,
+            canvasArt.width / 2,
+            1180
+        );
+
+        ctxArt.fillText(
+            texto,
+            canvasArt.width / 2,
+            1180
+        );
+
+        downloadCanvas(
+            canvasArt,
+            "artilheiro_final.png"
+        );
+
+        alert(
+            "Artes geradas!"
+        );
+
+    } catch (erro) {
+
+        console.error(erro);
+
+        alert(
+            "Erro ao gerar."
+        );
+
     }
 
-    // =========================
-    // CAPA
-    // =========================
-
-    const templateCapa =
-        await loadImage("./assets/equipe.png");
-
-    const fotoCapa =
-        await loadUserImage(capaFile);
-
-    const canvasCapa =
-        document.createElement("canvas");
-
-    canvasCapa.width =
-        templateCapa.width;
-
-    canvasCapa.height =
-        templateCapa.height;
-
-    const ctxCapa =
-        canvasCapa.getContext("2d");
-
-    // FOTO
-    ctxCapa.drawImage(
-        fotoCapa,
-        130,
-        130,
-        820,
-        820
-    );
-
-    // TEMPLATE
-    ctxCapa.drawImage(
-        templateCapa,
-        0,
-        0
-    );
-
-    downloadCanvas(
-        canvasCapa,
-        "capa_final.png"
-    );
-
-    // =========================
-    // ARTILHEIRO
-    // =========================
-
-    const templateArtilheiro =
-        await loadImage("./assets/artilheiro.png");
-
-    const fotoArtilheiro =
-        await loadUserImage(artilheiroFile);
-
-    const canvasArt =
-        document.createElement("canvas");
-
-    canvasArt.width =
-        templateArtilheiro.width;
-
-    canvasArt.height =
-        templateArtilheiro.height;
-
-    const ctxArt =
-        canvasArt.getContext("2d");
-
-    ctxArt.drawImage(
-        fotoArtilheiro,
-        95,
-        245,
-        885,
-        885
-    );
-
-    ctxArt.drawImage(
-        templateArtilheiro,
-        0,
-        0
-    );
-
-    downloadCanvas(
-        canvasArt,
-        "artilheiro_final.png"
-    );
-
-    alert("Artes geradas!");
 });
