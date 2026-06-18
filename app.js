@@ -49,7 +49,7 @@ document.getElementById("gerar").addEventListener("click", async () => {
     // =========================
 
     const templateCapa =
-        await loadImage("./assets/capa.png");
+        await loadImage("./assets/equipe.png");
 
     const fotoCapa =
         await loadUserImage(capaFile);
