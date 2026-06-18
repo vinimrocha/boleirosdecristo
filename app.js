@@ -4,6 +4,46 @@ let cropperArtilheiro;
 let capaFinal = null;
 let artilheiroFinal = null;
 
+function gerarTimestamp() {
+
+    const agora = new Date();
+
+    const ano =
+        agora.getFullYear();
+
+    const mes =
+        String(
+            agora.getMonth() + 1
+        ).padStart(2, "0");
+
+    const dia =
+        String(
+            agora.getDate()
+        ).padStart(2, "0");
+
+    const hora =
+        String(
+            agora.getHours()
+        ).padStart(2, "0");
+
+    const minuto =
+        String(
+            agora.getMinutes()
+        ).padStart(2, "0");
+
+    const segundo =
+        String(
+            agora.getSeconds()
+        ).padStart(2, "0");
+
+    const milesimo =
+        String(
+            agora.getMilliseconds()
+        ).padStart(3, "0");
+
+    return `${ano}${mes}${dia}_${hora}${minuto}${segundo}_${milesimo}`;
+}
+
 function loadImage(src) {
 
     return new Promise((resolve, reject) => {
@@ -220,6 +260,9 @@ document
 
 });
 
+const timestamp =
+    gerarTimestamp();
+
 // ============================
 // GERAR ARTES
 // ============================
@@ -294,7 +337,7 @@ document
 
         downloadCanvas(
             canvasCapa,
-            "capa_final.png"
+            `capa_${timestamp}.png`
         );
 
         // ==========================
@@ -303,7 +346,7 @@ document
 
         const templateArt =
             await loadImage(
-                "assets/equipe.png"
+                "assets/artilheiro.png"
             );
 
         const canvasArt =
@@ -378,7 +421,7 @@ document
 
         downloadCanvas(
             canvasArt,
-            "artilheiro_final.png"
+            `artilheiro_${timestamp}.png`
         );
 
         alert(
