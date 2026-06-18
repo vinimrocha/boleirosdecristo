@@ -60,7 +60,7 @@ document
         URL.createObjectURL(file);
 
     modal.style.display =
-        "block";
+        "flex";
 
     img.onload = () => {
 
