@@ -44,8 +44,6 @@ document
 .getElementById("capa")
 .addEventListener("change", (e) => {
 
-    console.log("CAPA SELECIONADA");
-
     const file = e.target.files[0];
 
     if (!file) return;
