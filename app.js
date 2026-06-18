@@ -44,6 +44,8 @@ document
 .getElementById("capa")
 .addEventListener("change", (e) => {
 
+    console.log("CAPA SELECIONADA");
+
     const file = e.target.files[0];
 
     if (!file) return;
@@ -336,31 +338,42 @@ document
         // TEXTO DOS GOLS
         // ==========================
 
+        const textoGols =
+    Number(gols) === 1
+        ? "1 GOL"
+        : `${gols} GOLS`;
+
         ctxArt.font =
-            "bold 160px Arial";
+            "bold 70px Arial";
 
         ctxArt.textAlign =
-            "center";
+            "right";
 
         ctxArt.lineWidth =
-            12;
+            8;
 
-        ctxArt.strokeStyle =
-            "#000";
-
+        // preenchimento preto
         ctxArt.fillStyle =
-            "#fff";
+            "#000000";
+
+        // borda branca
+        ctxArt.strokeStyle =
+            "#FFFFFF";
+
+        // posição no canto inferior direito da foto
+        const posX = 930;
+        const posY = 1080;
 
         ctxArt.strokeText(
-            gols,
-            canvasArt.width / 2,
-            780
+            textoGols,
+            posX,
+            posY
         );
 
         ctxArt.fillText(
-            gols,
-            canvasArt.width / 2,
-            780
+            textoGols,
+            posX,
+            posY
         );
 
         downloadCanvas(
