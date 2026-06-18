@@ -56,7 +56,11 @@ document
 
                 dragMode: "move",
 
-                autoCropArea: 1,
+                autoCropArea: 0.9,
+                responsive: true,
+                modal: false,
+                guides: false,
+                center: false
 
                 responsive: true
 

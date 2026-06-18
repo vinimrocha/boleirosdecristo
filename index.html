@@ -2,6 +2,7 @@
 <html lang="pt-BR">
 <head>
 <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Artes Futebol</title>
 <link rel="stylesheet" href="style.css">
 <link rel="stylesheet"
@@ -11,18 +12,28 @@ href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
 
 <h1>⚽ Boleiros de Cristo</h1>
 
-<h3>Capa</h3>
-<input type="file" id="capa">
+<div class="card">
 
-<div>
-    <img id="previewCapa" style="max-width:100%; display:none;">
+    <h3>Capa</h3>
+
+    <input type="file" id="capa">
+
+    <div class="crop-container">
+        <img id="previewCapa">
+    </div>
+
 </div>
 
-<h3>Artilheiro</h3>
-<input type="file" id="artilheiro">
+<div class="card">
 
-<div>
-    <img id="previewArtilheiro" style="max-width:100%; display:none;">
+    <h3>Artilheiro</h3>
+
+    <input type="file" id="artilheiro">
+
+    <div class="crop-container">
+        <img id="previewArtilheiro">
+    </div>
+
 </div>
 
 <br>
