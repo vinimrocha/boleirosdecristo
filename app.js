@@ -1,7 +1,11 @@
 let cropperCapa;
 let cropperArtilheiro;
 
+let capaFinal = null;
+let artilheiroFinal = null;
+
 function loadImage(src) {
+
     return new Promise((resolve, reject) => {
 
         const img = new Image();
@@ -11,19 +15,30 @@ function loadImage(src) {
         img.onerror = reject;
 
         img.src = src;
+
     });
+
 }
 
-function downloadCanvas(canvas, nome) {
+function downloadCanvas(canvas, nomeArquivo) {
 
     const link = document.createElement("a");
 
-    link.download = nome;
+    link.download = nomeArquivo;
 
     link.href = canvas.toDataURL("image/png");
 
+    document.body.appendChild(link);
+
     link.click();
+
+    document.body.removeChild(link);
+
 }
+
+// ============================
+// CAPA
+// ============================
 
 document
 .getElementById("capa")
@@ -33,13 +48,16 @@ document
 
     if (!file) return;
 
+    const modal =
+        document.getElementById("modalCapa");
+
     const img =
-        document.getElementById("previewCapa");
+        document.getElementById("cropImageCapa");
 
     img.src =
         URL.createObjectURL(file);
 
-    img.style.display =
+    modal.style.display =
         "block";
 
     img.onload = () => {
@@ -51,19 +69,67 @@ document
             new Cropper(img, {
 
                 aspectRatio: 1,
+
                 viewMode: 1,
+
                 dragMode: "move",
-                autoCropArea: 0.9,
+
+                autoCropArea: 1,
+
                 responsive: true,
+
                 modal: false,
+
                 guides: false,
-                center: false
+
+                center: false,
+
+                background: false,
+
+                movable: true,
+
+                zoomable: true,
+
+                scalable: false,
+
+                rotatable: false,
+
+                touchDragZoom: true
 
             });
 
     };
 
 });
+
+document
+.getElementById("salvarCapa")
+.addEventListener("click", () => {
+
+    capaFinal =
+        cropperCapa.getCroppedCanvas({
+
+            width: 820,
+
+            height: 820
+
+        });
+
+    document
+    .getElementById("statusCapa")
+    .innerHTML =
+        "✅ Foto da capa pronta";
+
+    document
+    .getElementById("modalCapa")
+    .style.display =
+        "none";
+
+});
+
+// ============================
+// ARTILHEIRO
+// ============================
 
 document
 .getElementById("artilheiro")
@@ -73,13 +139,16 @@ document
 
     if (!file) return;
 
+    const modal =
+        document.getElementById("modalArtilheiro");
+
     const img =
-        document.getElementById("previewArtilheiro");
+        document.getElementById("cropImageArtilheiro");
 
     img.src =
         URL.createObjectURL(file);
 
-    img.style.display =
+    modal.style.display =
         "block";
 
     img.onload = () => {
@@ -98,7 +167,25 @@ document
 
                 autoCropArea: 1,
 
-                responsive: true
+                responsive: true,
+
+                modal: false,
+
+                guides: false,
+
+                center: false,
+
+                background: false,
+
+                movable: true,
+
+                zoomable: true,
+
+                scalable: false,
+
+                rotatable: false,
+
+                touchDragZoom: true
 
             });
 
@@ -107,32 +194,72 @@ document
 });
 
 document
+.getElementById("salvarArtilheiro")
+.addEventListener("click", () => {
+
+    artilheiroFinal =
+        cropperArtilheiro.getCroppedCanvas({
+
+            width: 885,
+
+            height: 885
+
+        });
+
+    document
+    .getElementById("statusArtilheiro")
+    .innerHTML =
+        "✅ Foto do artilheiro pronta";
+
+    document
+    .getElementById("modalArtilheiro")
+    .style.display =
+        "none";
+
+});
+
+// ============================
+// GERAR ARTES
+// ============================
+
+document
 .getElementById("gerar")
 .addEventListener("click", async () => {
 
     try {
 
-        if (!cropperCapa || !cropperArtilheiro) {
+        if (!capaFinal) {
 
             alert(
-                "Selecione as duas imagens."
+                "Selecione a foto da capa."
             );
 
             return;
+
+        }
+
+        if (!artilheiroFinal) {
+
+            alert(
+                "Selecione a foto do artilheiro."
+            );
+
+            return;
+
         }
 
         const gols =
             document
             .getElementById("gols")
-            .value;
+            .value || "0";
 
-        // ======================
+        // ==========================
         // CAPA
-        // ======================
+        // ==========================
 
         const templateCapa =
             await loadImage(
-                "assets/equipe.png"
+                "assets/capa.png"
             );
 
         const canvasCapa =
@@ -147,17 +274,12 @@ document
             templateCapa.height;
 
         const ctxCapa =
-            canvasCapa.getContext("2d");
-
-        const fotoCapa =
-            cropperCapa
-            .getCroppedCanvas({
-                width: 820,
-                height: 820
-            });
+            canvasCapa.getContext(
+                "2d"
+            );
 
         ctxCapa.drawImage(
-            fotoCapa,
+            capaFinal,
             130,
             130
         );
@@ -173,13 +295,13 @@ document
             "capa_final.png"
         );
 
-        // ======================
+        // ==========================
         // ARTILHEIRO
-        // ======================
+        // ==========================
 
         const templateArt =
             await loadImage(
-                "assets/artilheiro.png"
+                "assets/equipe.png"
             );
 
         const canvasArt =
@@ -194,17 +316,12 @@ document
             templateArt.height;
 
         const ctxArt =
-            canvasArt.getContext("2d");
-
-        const fotoArt =
-            cropperArtilheiro
-            .getCroppedCanvas({
-                width: 885,
-                height: 885
-            });
+            canvasArt.getContext(
+                "2d"
+            );
 
         ctxArt.drawImage(
-            fotoArt,
+            artilheiroFinal,
             95,
             245
         );
@@ -215,36 +332,35 @@ document
             0
         );
 
-        const texto =
-            Number(gols) === 1
-            ? "1 GOL"
-            : `${gols} GOLS`;
+        // ==========================
+        // TEXTO DOS GOLS
+        // ==========================
 
         ctxArt.font =
-            "bold 80px Arial";
-
-        ctxArt.fillStyle =
-            "#FFFFFF";
-
-        ctxArt.strokeStyle =
-            "#000000";
-
-        ctxArt.lineWidth =
-            8;
+            "bold 160px Arial";
 
         ctxArt.textAlign =
             "center";
 
+        ctxArt.lineWidth =
+            12;
+
+        ctxArt.strokeStyle =
+            "#000";
+
+        ctxArt.fillStyle =
+            "#fff";
+
         ctxArt.strokeText(
-            texto,
+            gols,
             canvasArt.width / 2,
-            1180
+            780
         );
 
         ctxArt.fillText(
-            texto,
+            gols,
             canvasArt.width / 2,
-            1180
+            780
         );
 
         downloadCanvas(
@@ -253,15 +369,18 @@ document
         );
 
         alert(
-            "Artes geradas!"
+            "⚽ Artes geradas com sucesso!"
         );
 
-    } catch (erro) {
+    }
+    catch (erro) {
 
-        console.error(erro);
+        console.error(
+            erro
+        );
 
         alert(
-            "Erro ao gerar."
+            "Erro ao gerar as artes."
         );
 
     }

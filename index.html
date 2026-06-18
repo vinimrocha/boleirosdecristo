@@ -1,52 +1,130 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
+
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Artes Futebol</title>
-<link rel="stylesheet" href="style.css">
-<link rel="stylesheet"
-href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1">
+
+    <title>Boleiros de Cristo</title>
+
+    <link rel="stylesheet"
+          href="style.css">
+
+    <link rel="stylesheet"
+          href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+
 </head>
+
 <body>
 
-<h1>⚽ Boleiros de Cristo</h1>
+    <div class="container">
 
-<div class="card">
+        <h1>⚽ Boleiros de Cristo</h1>
 
-    <h3>Capa</h3>
+        <div class="card">
 
-    <input type="file" id="capa">
+            <h3>📸 Foto da Capa</h3>
 
-    <div class="crop-container">
-        <img id="previewCapa">
+            <input type="file"
+                   id="capa"
+                   accept="image/*">
+
+            <div id="statusCapa"
+                 class="preview-ok">
+
+                Nenhuma imagem selecionada
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>🏆 Artilheiro</h3>
+
+            <input type="file"
+                   id="artilheiro"
+                   accept="image/*">
+
+            <div id="statusArtilheiro"
+                 class="preview-ok">
+
+                Nenhuma imagem selecionada
+
+            </div>
+
+        </div>
+
+        <div class="card">
+
+            <h3>⚽ Quantidade de gols</h3>
+
+            <input type="number"
+                   id="gols"
+                   value="1"
+                   min="0">
+
+        </div>
+
+        <button id="gerar">
+
+            GERAR ARTES
+
+        </button>
+
     </div>
 
-</div>
+    <!-- MODAL CAPA -->
 
-<div class="card">
+    <div id="modalCapa"
+         class="modal">
 
-    <h3>Artilheiro</h3>
+        <div class="modal-content">
 
-    <input type="file" id="artilheiro">
+            <h3>Ajuste a foto da capa</h3>
 
-    <div class="crop-container">
-        <img id="previewArtilheiro">
+            <img id="cropImageCapa">
+
+            <button id="salvarCapa"
+                    class="btn-modal">
+
+                Salvar Capa
+
+            </button>
+
+        </div>
+
     </div>
 
-</div>
+    <!-- MODAL ARTILHEIRO -->
 
-<br>
+    <div id="modalArtilheiro"
+         class="modal">
 
-<label>Gols:</label>
-<input type="number" id="gols" value="3">
+        <div class="modal-content">
 
-<br><br>
+            <h3>Ajuste a foto do artilheiro</h3>
 
-<button id="gerar">Gerar Artes</button>
+            <img id="cropImageArtilheiro">
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-<script src="app.js"></script>
+            <button id="salvarArtilheiro"
+                    class="btn-modal">
+
+                Salvar Artilheiro
+
+            </button>
+
+        </div>
+
+    </div>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
+
+    <script src="app.js"></script>
 
 </body>
+
 </html>
