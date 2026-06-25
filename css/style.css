@@ -110,9 +110,19 @@ gap: 8px;
 }
 
 .jogador-meta {
+display: flex;
+align-items: center;
+gap: 6px;
 white-space: nowrap;
 font-size: 12px;
 color: #666;
+}
+
+.tag-convidado {
+font-style: italic;
+font-size: 11px;
+color: var(--primary-dark);
+opacity: 0.8;
 }
 
 .jogador small {
@@ -229,9 +239,37 @@ border-bottom: 1px dashed #eee;
 font-size: 14px;
 }
 
+/* ESTILOS PARA O RESULTADO DA IMAGEM */
+#imagemResultado {
+background: white;
+padding: 20px;
+border-radius: 14px;
+}
+
+.resultado-header {
+text-align: center;
+padding: 15px 0;
+margin-bottom: 20px;
+border-bottom: 2px solid var(--primary);
+}
+
+.resultado-header h1 {
+color: var(--black);
+font-size: 24px;
+font-weight: bold;
+}
+
+.resultado-footer {
+text-align: center;
+padding: 15px 0;
+margin-top: 20px;
+border-top: 2px solid var(--primary);
+color: var(--muted);
+font-size: 14px;
+}
+
 /* MOBILE */
 @media (min-width: 768px) {
-
 
 .lista-jogadores {
     max-height: 400px;
@@ -254,8 +292,13 @@ font-size: 14px;
     font-size: 14px;
 }
 
+/* Estilos para a imagem em desktop */
+#imagemResultado {
+    padding: 30px;
+}
 
-
-
+.resultado-header h1 {
+    font-size: 28px;
+}
 
 }

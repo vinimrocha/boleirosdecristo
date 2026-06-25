@@ -1,8 +1,7 @@
 /**
-
-* BOLEIROS DE CRISTO
-* app.js
-  */
+ * BOLEIROS DE CRISTO
+ * app.js
+ */
 
 // =========================
 // ESTADO GLOBAL
@@ -21,6 +20,7 @@ const btnSortear = document.getElementById("btnSortear");
 const btnResortear = document.getElementById("btnResortear");
 const btnCompartilhar = document.getElementById("btnCompartilhar");
 const btnDesmarcar = document.getElementById("btnDesmarcar");
+const btnAdicionar = document.getElementById("btnAdicionar");
 const contadorSelecionados = document.getElementById("contadorSelecionados");
 const resultadoEl = document.getElementById("resultado");
 
@@ -51,7 +51,6 @@ presente: false
 
 function renderLista() {
 
-
 listaEl.innerHTML = "";
 
 jogadores.forEach((j, index) => {
@@ -61,16 +60,14 @@ jogadores.forEach((j, index) => {
 
     div.innerHTML = `
         <label>
-            <input type="checkbox" data-index="${index}">
+            <input type="checkbox" data-index="${index}" ${j.presente ? "checked" : ""}>
             
             <div class="jogador-info">
                 <strong>${j.nome}</strong>
 
                 <div class="jogador-meta">
-                    ${j.goleiro
-                        ? "🥅 Goleiro"
-                        : `⭐ ${j.categoria.toFixed(1)}`
-                    }
+                    ${j.goleiro ? "🥅 Goleiro" : `⭐ ${j.categoria.toFixed(1)}`}
+                    ${j.convidado ? `<em class="tag-convidado">convidado</em>` : ""}
                 </div>
             </div>
         </label>
@@ -103,28 +100,10 @@ atualizarContador();
 
 function getPresentes() {
 
+const linhas = jogadores.filter(j => j.presente && !j.goleiro);
+const goleiros = jogadores.filter(j => j.presente && j.goleiro);
 
-const linhas = jogadores.filter(j =>
-    j.presente && !j.goleiro
-);
-
-const goleiros = jogadores.filter(j =>
-    j.presente && j.goleiro
-);
-
-const convidadosLinhas = convidados.filter(c =>
-    !c.goleiro
-);
-
-const convidadosGoleiros = convidados.filter(c =>
-    c.goleiro
-);
-
-return {
-    linhas: [...linhas, ...convidadosLinhas],
-    goleiros: [...goleiros, ...convidadosGoleiros]
-};
-
+return { linhas, goleiros };
 
 }
 
@@ -134,15 +113,22 @@ return {
 
 function sortearTimes(linhas, goleiros, porTime) {
 
-
 const total = linhas.length + goleiros.length;
 
-if (total < 2) {
-    alert("Selecione ao menos 2 jogadores.");
+// Calcular quantidade de times (arredondar para cima)
+const qtdTimes = Math.ceil(total / porTime);
+
+// Verificar se há pelo menos 1 jogador por time
+if (qtdTimes < 1) {
+    alert("É necessário ter pelo menos 1 jogador para sortear");
     return null;
 }
 
-const qtdTimes = Math.ceil(total / porTime);
+// Se só tem 1 time, verificar se tem jogadores suficientes
+if (qtdTimes === 1 && total < 2) {
+    alert("É necessário ter pelo menos 2 jogadores para sortear");
+    return null;
+}
 
 const times = [];
 
@@ -155,43 +141,64 @@ for (let i = 0; i < qtdTimes; i++) {
 }
 
 // =========================
-// GOLEIROS
+// GOLEIROS (distribuir igualmente)
 // =========================
 
 goleiros.forEach((g, i) => {
-
-    if (i < times.length) {
-        times[i].jogadores.push(g);
-    }
-
+    const timeIndex = i % times.length;
+    times[timeIndex].jogadores.push(g);
 });
 
 // =========================
 // LINHAS (BALANCEADO)
 // =========================
 
+// Embaralhar e ordenar por categoria
 const ordenados = [...linhas]
     .sort(() => Math.random() - 0.5)
     .sort((a, b) => b.categoria - a.categoria);
 
+// Distribuir jogadores balanceadamente
 ordenados.forEach(j => {
 
+    // Encontrar times que ainda podem receber jogadores
     const candidatos = times
-        .filter(t =>
-            t.jogadores.length < porTime
-        )
-        .sort((a, b) =>
-            a.forca - b.forca
-        );
+        .filter(t => t.jogadores.length < porTime)
+        .sort((a, b) => a.forca - b.forca);
 
-    candidatos[0].jogadores.push(j);
-    candidatos[0].forca += j.categoria;
+    if (candidatos.length > 0) {
+        candidatos[0].jogadores.push(j);
+        candidatos[0].forca += j.categoria;
+    } else {
+        // Se todos os times já atingiram o limite, adicionar ao time com menor força
+        const timeMenorForca = times.reduce((a, b) => a.forca < b.forca ? a : b);
+        timeMenorForca.jogadores.push(j);
+        timeMenorForca.forca += j.categoria;
+    }
 
 });
 
+// Reordenar times para que o time com menos jogadores seja sempre o último (Time 4)
+reordenarTimes(times);
+
 return times;
 
+}
 
+// =========================
+// REORDENAR TIMES
+// =========================
+
+function reordenarTimes(times) {
+    // Ordenar por quantidade de jogadores (do maior para o menor)
+    times.sort((a, b) => b.jogadores.length - a.jogadores.length);
+    
+    // Renomear os times
+    times.forEach((t, index) => {
+        t.nome = `Time ${index + 1}`;
+    });
+    
+    return times;
 }
 
 // =========================
@@ -200,9 +207,19 @@ return times;
 
 function renderResultado(times) {
 
-
 resultadoEl.innerHTML = "";
 
+// Criar container para a imagem
+const imagemContainer = document.createElement("div");
+imagemContainer.id = "imagemResultado";
+
+// Adicionar cabeçalho
+const header = document.createElement("div");
+header.className = "resultado-header";
+header.innerHTML = `<h1>⚽ Boleiros de Cristo</h1>`;
+imagemContainer.appendChild(header);
+
+// Adicionar os times
 times.forEach(t => {
 
     const div = document.createElement("div");
@@ -220,13 +237,19 @@ times.forEach(t => {
 
     });
 
-    html += `<hr><small>Força: ${t.forca.toFixed(1)}</small>`;
-
     div.innerHTML = html;
-
-    resultadoEl.appendChild(div);
+    imagemContainer.appendChild(div);
 });
 
+// Adicionar rodapé
+const footer = document.createElement("div");
+footer.className = "resultado-footer";
+const dataAtual = new Date();
+const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
+footer.innerHTML = `<span>📅 ${dataFormatada}</span>`;
+imagemContainer.appendChild(footer);
+
+resultadoEl.appendChild(imagemContainer);
 
 }
 
@@ -236,13 +259,11 @@ times.forEach(t => {
 
 function getPorTime() {
 
-
 const el = document.querySelector(
     'input[name="jogadoresPorTime"]:checked'
 );
 
 return Number(el.value);
-
 
 }
 
@@ -251,7 +272,6 @@ return Number(el.value);
 // =========================
 
 function realizarSorteio() {
-
 
 const { linhas, goleiros } = getPresentes();
 
@@ -268,16 +288,13 @@ btnCompartilhar.style.display = "block";
 
 window.timesAtuais = times;
 
-
 }
 
 // =========================
 // EVENTOS
 // =========================
 
-
 function bindEventos() {
-
 
 btnSortear.addEventListener("click", realizarSorteio);
 
@@ -287,6 +304,36 @@ btnCompartilhar.addEventListener("click", compartilharImagem);
 
 btnDesmarcar.addEventListener("click", desmarcarTodos);
 
+btnAdicionar.addEventListener("click", adicionarConvidado);
+
+}
+
+// =========================
+// ADICIONAR CONVIDADO
+// =========================
+
+function adicionarConvidado() {
+
+    const nome = document.getElementById("convidadoNome").value.trim();
+    const tipo = document.getElementById("convidadoTipo").value;
+    const categoria = parseFloat(document.getElementById("convidadoCategoria").value);
+
+    if (!nome) {
+        alert("Informe o nome do convidado.");
+        return;
+    }
+
+    jogadores.push({
+        nome,
+        categoria,
+        goleiro: tipo === "goleiro",
+        presente: true,
+        convidado: true
+    });
+
+    document.getElementById("convidadoNome").value = "";
+
+    renderLista();
 
 }
 
@@ -323,7 +370,6 @@ function atualizarContador() {
 
 async function compartilharImagem() {
 
-
 const el = document.getElementById("resultado");
 
 const canvas = await html2canvas(el);
@@ -351,6 +397,5 @@ canvas.toBlob(async blob => {
     }
 
 });
-
 
 }
