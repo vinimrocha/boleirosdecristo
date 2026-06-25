@@ -1,0 +1,222 @@
+/* =========================
+BOLEIROS DE CRISTO
+Tema: Laranja / Preto / Branco
+========================= */
+
+:root {
+--primary: #F57C00;      /* laranja suave */
+--primary-dark: #E65100;
+--black: #1C1C1C;
+--white: #FFFFFF;
+--bg: #F5F5F5;
+--card: #FFFFFF;
+--muted: #777;
+--border: #E6E6E6;
+}
+
+/* Reset */
+
+* {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: Arial, Helvetica, sans-serif;
+  }
+
+body {
+background: var(--bg);
+color: var(--black);
+}
+
+/* HEADER */
+.header {
+background: linear-gradient(135deg, var(--black), #333);
+color: var(--white);
+text-align: center;
+padding: 24px 16px;
+}
+
+.header h1 {
+font-size: 22px;
+margin-bottom: 4px;
+}
+
+.header p {
+font-size: 13px;
+opacity: 0.8;
+}
+
+/* CONTAINER */
+.container {
+padding: 12px;
+max-width: 900px;
+margin: auto;
+}
+
+/* CARD */
+.card {
+background: var(--card);
+border-radius: 14px;
+padding: 16px;
+margin-bottom: 12px;
+box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+}
+
+.card h2 {
+font-size: 16px;
+margin-bottom: 12px;
+}
+
+/* LISTA DE JOGADORES */
+.lista-jogadores {
+display: flex;
+flex-direction: column;
+gap: 8px;
+max-height: 300px;
+overflow-y: auto;
+}
+
+.jogador {
+display: flex;
+align-items: center;
+justify-content: space-between;
+padding: 10px;
+border: 1px solid var(--border);
+border-radius: 10px;
+background: #fff;
+}
+
+.jogador small {
+color: var(--muted);
+}
+
+/* FORM */
+.form-group {
+margin-bottom: 10px;
+}
+
+input, select {
+width: 100%;
+padding: 10px;
+border-radius: 8px;
+border: 1px solid var(--border);
+outline: none;
+}
+
+input:focus, select:focus {
+border-color: var(--primary);
+}
+
+/* BOTÕES */
+button {
+width: 100%;
+padding: 12px;
+border: none;
+border-radius: 10px;
+font-weight: bold;
+cursor: pointer;
+margin-top: 8px;
+}
+
+.btn-primary {
+background: var(--primary);
+color: white;
+}
+
+.btn-primary:active {
+background: var(--primary-dark);
+}
+
+.btn-secondary {
+background: #222;
+color: white;
+}
+
+.btn-success {
+background: var(--primary);
+color: white;
+}
+
+/* CONFIGURAÇÃO */
+.radio-group {
+display: flex;
+justify-content: space-between;
+gap: 8px;
+margin-bottom: 10px;
+}
+
+.radio-group label {
+flex: 1;
+text-align: center;
+padding: 10px;
+border: 1px solid var(--border);
+border-radius: 10px;
+font-size: 14px;
+}
+
+/* RESULTADO */
+.resultado-container {
+margin-top: 10px;
+}
+
+.acoes-resultado {
+display: flex;
+gap: 8px;
+}
+
+.acoes-resultado button {
+flex: 1;
+}
+
+/* TIMES */
+.time {
+background: white;
+border-radius: 14px;
+padding: 14px;
+margin-bottom: 12px;
+box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+border-left: 5px solid var(--primary);
+}
+
+.time h3 {
+margin-bottom: 8px;
+font-size: 16px;
+color: var(--black);
+}
+
+.time .goleiro {
+font-weight: bold;
+margin-bottom: 6px;
+color: var(--primary-dark);
+}
+
+.time ul {
+list-style: none;
+}
+
+.time ul li {
+padding: 4px 0;
+border-bottom: 1px dashed #eee;
+font-size: 14px;
+}
+
+/* MOBILE */
+@media (min-width: 768px) {
+
+
+.lista-jogadores {
+    max-height: 400px;
+}
+
+.radio-group {
+    justify-content: flex-start;
+    gap: 12px;
+}
+
+.radio-group label {
+    flex: unset;
+    min-width: 120px;
+}
+
+
+}

@@ -1,129 +1,170 @@
 <!DOCTYPE html>
+
 <html lang="pt-BR">
 
 <head>
-
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-    <meta name="viewport"
-          content="width=device-width, initial-scale=1">
 
-    <title>Boleiros de Cristo</title>
+<title>Boleiros de Cristo</title>
 
-    <link rel="stylesheet"
-          href="style.css">
+<link rel="stylesheet" href="css/style.css">
 
-    <link rel="stylesheet"
-          href="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.css">
+<script src="https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js"></script>
+
 
 </head>
 
 <body>
 
-    <div class="container">
 
-        <h1>⚽ Boleiros de Cristo</h1>
+<header class="header">
+    <h1>⚽ Boleiros de Cristo</h1>
+    <p>Sorteador Oficial de Times</p>
+</header>
 
-        <div class="card">
+<main class="container">
 
-            <h3>📸 Foto da Capa</h3>
+    <section class="card">
 
-            <input type="file"
-                   id="capa"
-                   accept="image/*">
+        <h2>📋 Jogadores Presentes</h2>
 
-            <div id="statusCapa"
-                 class="preview-ok">
+        <div id="listaJogadores" class="lista-jogadores"></div>
 
-                Nenhuma imagem selecionada
+    </section>
 
-            </div>
+    <section class="card">
 
+        <h2>➕ Adicionar Convidado</h2>
+
+        <div class="form-group">
+            <label>Nome</label>
+            <input
+                type="text"
+                id="convidadoNome"
+                placeholder="Nome do convidado">
         </div>
 
-        <div class="card">
+        <div class="form-group">
+            <label>Tipo</label>
 
-            <h3>🏆 Artilheiro</h3>
-
-            <input type="file"
-                   id="artilheiro"
-                   accept="image/*">
-
-            <div id="statusArtilheiro"
-                 class="preview-ok">
-
-                Nenhuma imagem selecionada
-
-            </div>
-
+            <select id="convidadoTipo">
+                <option value="linha">Jogador de Linha</option>
+                <option value="goleiro">Goleiro</option>
+            </select>
         </div>
 
-        <div class="card">
+        <div class="form-group" id="categoriaContainer">
+            <label>Categoria</label>
 
-            <h3>⚽ Quantidade de gols</h3>
+            <select id="convidadoCategoria">
 
-            <input type="number"
-                   id="gols"
-                   value="1"
-                   min="0">
+                <option value="0">0</option>
+                <option value="0.5">0.5</option>
 
+                <option value="1">1</option>
+                <option value="1.5">1.5</option>
+
+                <option value="2">2</option>
+                <option value="2.5">2.5</option>
+
+                <option value="3">3</option>
+                <option value="3.5">3.5</option>
+
+                <option value="4">4</option>
+                <option value="4.5">4.5</option>
+
+                <option value="5">5</option>
+
+            </select>
         </div>
 
-        <button id="gerar">
-
-            GERAR ARTES
-
+        <button id="btnAdicionar">
+            Adicionar Convidado
         </button>
 
-    </div>
+    </section>
 
-    <!-- MODAL CAPA -->
 
-    <div id="modalCapa"
-         class="modal">
+    <section class="card">
 
-        <div class="modal-content">
+        <h2>⚙️ Configuração</h2>
 
-            <h3>Ajuste a foto da capa</h3>
+        <div class="radio-group">
 
-            <img id="cropImageCapa">
+            <label>
+                <input
+                    type="radio"
+                    name="jogadoresPorTime"
+                    value="4">
+                4 por time
+            </label>
 
-            <button id="salvarCapa"
-                    class="btn-modal">
+            <label>
+                <input
+                    type="radio"
+                    name="jogadoresPorTime"
+                    value="5">
+                5 por time
+            </label>
 
-                Salvar Capa
+            <label>
+                <input
+                    type="radio"
+                    name="jogadoresPorTime"
+                    value="6"
+                    checked>
+                6 por time
+            </label>
+
+        </div>
+
+        <button id="btnSortear" class="btn-primary">
+            🎲 Sortear Times
+        </button>
+
+        <button id="btnDesmarcar" class="btn-secondary">
+            ❌ Desmarcar Todos
+        </button>
+
+    </section>
+
+    <section
+        id="resultadoContainer"
+        class="resultado-container">
+
+        <div class="acoes-resultado">
+
+            <button
+                id="btnResortear"
+                class="btn-secondary"
+                style="display:none;">
+
+                🔄 Sortear Novamente
+
+            </button>
+
+            <button
+                id="btnCompartilhar"
+                class="btn-success"
+                style="display:none;">
+
+                📤 Compartilhar Imagem
 
             </button>
 
         </div>
 
-    </div>
+        <div id="resultado"></div>
 
-    <!-- MODAL ARTILHEIRO -->
+    </section>
 
-    <div id="modalArtilheiro"
-         class="modal">
+</main>
 
-        <div class="modal-content">
+<script src="js/jogadores.js"></script>
+<script src="js/app.js"></script>
 
-            <h3>Ajuste a foto do artilheiro</h3>
-
-            <img id="cropImageArtilheiro">
-
-            <button id="salvarArtilheiro"
-                    class="btn-modal">
-
-                Salvar Artilheiro
-
-            </button>
-
-        </div>
-
-    </div>
-
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/cropperjs/1.6.2/cropper.min.js"></script>
-
-    <script src="app.js"></script>
 
 </body>
 
