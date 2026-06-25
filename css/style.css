@@ -26,6 +26,9 @@ Tema: Laranja / Preto / Branco
 body {
 background: var(--bg);
 color: var(--black);
+min-height: 100vh;
+display: flex;
+flex-direction: column;
 }
 
 /* HEADER */
@@ -51,6 +54,8 @@ opacity: 0.8;
 padding: 12px;
 max-width: 900px;
 margin: auto;
+flex: 1;
+width: 100%;
 }
 
 /* CARD */
@@ -266,6 +271,33 @@ margin-top: 20px;
 border-top: 2px solid var(--primary);
 color: var(--muted);
 font-size: 14px;
+}
+
+/* RODAPÉ DO SITE */
+.site-footer {
+background: var(--black);
+color: var(--white);
+text-align: center;
+padding: 20px;
+margin-top: 20px;
+border-top: 3px solid var(--primary);
+}
+
+.site-footer p {
+font-size: 14px;
+opacity: 0.9;
+}
+
+.site-footer a {
+color: var(--primary);
+text-decoration: none;
+font-weight: bold;
+transition: color 0.3s ease;
+}
+
+.site-footer a:hover {
+color: var(--primary-dark);
+text-decoration: underline;
 }
 
 /* MOBILE */
