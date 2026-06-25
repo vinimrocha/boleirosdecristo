@@ -21,7 +21,7 @@ const btnSortear = document.getElementById("btnSortear");
 const btnResortear = document.getElementById("btnResortear");
 const btnCompartilhar = document.getElementById("btnCompartilhar");
 const btnDesmarcar = document.getElementById("btnDesmarcar");
-
+const contadorSelecionados = document.getElementById("contadorSelecionados");
 const resultadoEl = document.getElementById("resultado");
 
 // =========================
@@ -60,13 +60,18 @@ jogadores.forEach((j, index) => {
     div.className = "jogador";
 
     div.innerHTML = `
-        <label style="display:flex;gap:10px;align-items:center;">
+        <label>
             <input type="checkbox" data-index="${index}">
-            <div>
-                <strong>${j.nome}</strong><br>
-                <small>
-                    ${j.goleiro ? "🥅 Goleiro" : `⭐ ${j.categoria}`}
-                </small>
+            
+            <div class="jogador-info">
+                <strong>${j.nome}</strong>
+
+                <div class="jogador-meta">
+                    ${j.goleiro
+                        ? "🥅 Goleiro"
+                        : `⭐ ${j.categoria.toFixed(1)}`
+                    }
+                </div>
             </div>
         </label>
     `;
@@ -82,10 +87,13 @@ document.querySelectorAll("input[type=checkbox]")
             const i = e.target.dataset.index;
             jogadores[i].presente = e.target.checked;
 
+            atualizarContador();
+
         });
 
     });
 
+atualizarContador();
 
 }
 
@@ -129,12 +137,12 @@ function sortearTimes(linhas, goleiros, porTime) {
 
 const total = linhas.length + goleiros.length;
 
-const qtdTimes = total / porTime;
-
-if (!Number.isInteger(qtdTimes)) {
-    alert("Quantidade inválida para jogadores por time");
+if (total < 2) {
+    alert("Selecione ao menos 2 jogadores.");
     return null;
 }
+
+const qtdTimes = Math.ceil(total / porTime);
 
 const times = [];
 
@@ -295,6 +303,18 @@ function desmarcarTodos() {
     document.querySelectorAll("input[type=checkbox]")
         .forEach(cb => cb.checked = false);
 
+    atualizarContador();
+
+}
+// =========================
+// CONTADOR
+// =========================
+function atualizarContador() {
+
+    const total = jogadores.filter(j => j.presente).length;
+
+    contadorSelecionados.textContent =
+        `👥 Selecionados: ${total}`;
 }
 
 // =========================
