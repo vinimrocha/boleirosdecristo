@@ -286,10 +286,10 @@ header.className = "resultado-header";
 header.innerHTML = `
     <img
         src="logo-boleiros.png"
-        alt=""
+        alt="Boleiros de Cristo"
         class="resultado-logo"
-        width="52"
-        height="52">
+        width="56"
+        height="56">
     <div class="resultado-header-text">
         <h1>Boleiros de Cristo</h1>
     </div>
@@ -327,8 +327,8 @@ footer.className = "resultado-footer";
 const dataAtual = new Date();
 const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
 footer.innerHTML = `
-    <img src="logo-boleiros.png" class="resultado-footer-logo" alt="">
-    <span>Boleiros de Cristo · 📅 ${dataFormatada}</span>
+    <img src="logo-boleiros.png" class="resultado-footer-logo" alt="Boleiros de Cristo">
+    <span>📅 ${dataFormatada}</span>
 `;
 imagemContainer.appendChild(footer);
 
