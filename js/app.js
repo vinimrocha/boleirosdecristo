@@ -326,10 +326,7 @@ const footer = document.createElement("div");
 footer.className = "resultado-footer";
 const dataAtual = new Date();
 const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
-footer.innerHTML = `
-    <img src="logo-boleiros.png" class="resultado-footer-logo" alt="Boleiros de Cristo">
-    <span>📅 ${dataFormatada}</span>
-`;
+footer.innerHTML = `<span>${dataFormatada}</span>`;
 imagemContainer.appendChild(footer);
 
 resultadoEl.appendChild(imagemContainer);
