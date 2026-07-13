@@ -4,7 +4,8 @@
 
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover">
+    <meta name="theme-color" content="#1C1C1C">
     
     <!-- Meta tags para compartilhamento -->
     <meta property="og:title" content="Boleiros de Cristo - Sorteador de Times" />
@@ -24,7 +25,7 @@
     <!-- Meta tags básicas -->
     <meta name="description" content="Sorteador de times do grupo Boleiros de Cristo - Faça sorteios equilibrados para suas peladas" />
     
-    <title>Boleiros de Cristo - Sorteador de Times ⚽</title>
+    <title>Boleiros de Cristo - Sorteador de Times</title>
 
 <link rel="stylesheet" href="css/style.css">
 
@@ -37,119 +38,148 @@
 
 
 <header class="header">
-    <h1>⚽ Boleiros de Cristo</h1>
-    <p>Sorteador Oficial de Times</p>
+    <div class="header-brand">
+        <img
+            src="logo-boleiros.png"
+            alt=""
+            class="header-logo"
+            width="64"
+            height="64">
+        <div class="header-text">
+            <h1>Boleiros de Cristo</h1>
+            <p>Sorteador Oficial de Times</p>
+        </div>
+    </div>
 </header>
 
 <main class="container">
 
-    <section class="card">
+    <section class="card card-players">
 
-        <h2>📋 Jogadores Presentes</h2>
-
-        <div id="contadorSelecionados" class="contador">
-            👥 Selecionados: 0
+        <div class="card-header-row">
+            <h2>Jogadores Presentes</h2>
+            <div id="contadorSelecionados" class="contador">
+                0 selecionados
+            </div>
         </div>
 
         <div id="listaJogadores" class="lista-jogadores"></div>
 
     </section>
 
-    <section class="card">
+    <section class="card card-config">
 
-        <h2>➕ Adicionar Convidado</h2>
+        <h2>Configuração</h2>
 
-        <div class="form-group">
-            <label>Nome</label>
-            <input
-                type="text"
-                id="convidadoNome"
-                placeholder="Nome do convidado">
-        </div>
-
-        <div class="form-group">
-            <label>Tipo</label>
-
-            <select id="convidadoTipo">
-                <option value="linha">Jogador de Linha</option>
-                <option value="goleiro">Goleiro</option>
-            </select>
-        </div>
-
-        <div class="form-group" id="categoriaContainer">
-            <label>Categoria</label>
-
-            <select id="convidadoCategoria">
-
-                <option value="0">0</option>
-                <option value="0.5">0.5</option>
-
-                <option value="1">1</option>
-                <option value="1.5">1.5</option>
-
-                <option value="2">2</option>
-                <option value="2.5">2.5</option>
-
-                <option value="3">3</option>
-                <option value="3.5">3.5</option>
-
-                <option value="4">4</option>
-                <option value="4.5">4.5</option>
-
-                <option value="5">5</option>
-
-            </select>
-        </div>
-
-        <button id="btnAdicionar">
-            Adicionar Convidado
-        </button>
-
-    </section>
-
-
-    <section class="card">
-
-        <h2>⚙️ Configuração</h2>
+        <p class="config-label">Jogadores por time</p>
 
         <div class="radio-group">
 
-            <label>
+            <label class="radio-option">
                 <input
                     type="radio"
                     name="jogadoresPorTime"
                     value="4">
-                4 jogadores por time
+                <span class="radio-value">4</span>
+                <span class="radio-hint">por time</span>
             </label>
 
-            <label>
+            <label class="radio-option">
                 <input
                     type="radio"
                     name="jogadoresPorTime"
                     value="5">
-                5 jogadores por time
+                <span class="radio-value">5</span>
+                <span class="radio-hint">por time</span>
             </label>
 
-            <label>
+            <label class="radio-option">
                 <input
                     type="radio"
                     name="jogadoresPorTime"
                     value="6"
                     checked>
-                6 jogadores por time
+                <span class="radio-value">6</span>
+                <span class="radio-hint">por time</span>
             </label>
 
         </div>
 
-        <button id="btnSortear" class="btn-primary">
-            🎲 Sortear Times
-        </button>
+        <div class="sort-actions">
+            <button id="btnSortear" class="btn-primary">
+                Sortear Times
+            </button>
 
-        <button id="btnDesmarcar" class="btn-secondary">
-            ❌ Desmarcar Todos
-        </button>
+            <button id="btnDesmarcar" class="btn-secondary btn-compact">
+                Desmarcar Todos
+            </button>
+        </div>
 
     </section>
+
+    <details class="card card-collapsible">
+        <summary>Adicionar Convidado</summary>
+
+        <div class="card-collapsible-body">
+
+            <div class="form-group">
+                <label for="convidadoNome">Nome</label>
+                <input
+                    type="text"
+                    id="convidadoNome"
+                    placeholder="Nome do convidado"
+                    autocomplete="off">
+            </div>
+
+            <div class="form-row">
+                <div class="form-group">
+                    <label for="convidadoTipo">Tipo</label>
+
+                    <select id="convidadoTipo">
+                        <option value="linha">Linha</option>
+                        <option value="goleiro">Goleiro</option>
+                    </select>
+                </div>
+
+                <div class="form-group" id="categoriaContainer">
+                    <label for="convidadoCategoria">Categoria</label>
+
+                    <select id="convidadoCategoria">
+
+                        <option value="0">0</option>
+                        <option value="0.5">0.5</option>
+
+                        <option value="1">1</option>
+                        <option value="1.5">1.5</option>
+
+                        <option value="2">2</option>
+                        <option value="2.5">2.5</option>
+
+                        <option value="3">3</option>
+                        <option value="3.5">3.5</option>
+
+                        <option value="4">4</option>
+                        <option value="4.5">4.5</option>
+
+                        <option value="5">5</option>
+
+                    </select>
+                </div>
+            </div>
+
+            <div class="form-group form-check">
+                <label>
+                    <input type="checkbox" id="convidadoMenina">
+                    Menina (times separados)
+                </label>
+            </div>
+
+            <button id="btnAdicionar" type="button">
+                Adicionar Convidado
+            </button>
+
+        </div>
+    </details>
 
     <section
         id="resultadoContainer"
@@ -162,7 +192,7 @@
                 class="btn-secondary"
                 style="display:none;">
 
-                🔄 Sortear Novamente
+                Sortear Novamente
 
             </button>
 
@@ -171,7 +201,7 @@
                 class="btn-success"
                 style="display:none;">
 
-                📤 Compartilhar Imagem
+                Compartilhar Imagem
 
             </button>
 
@@ -183,7 +213,6 @@
 
 </main>
 
-<!-- Rodapé do site -->
 <footer class="site-footer">
     <p>
         Desenvolvido por 

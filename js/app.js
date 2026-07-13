@@ -50,48 +50,82 @@ presente: false
 // =========================
 
 function renderLista() {
+    listaEl.innerHTML = "";
 
-listaEl.innerHTML = "";
+    jogadores.forEach((j, index) => {
+        const div = document.createElement("div");
+        div.className = "jogador";
 
-jogadores.forEach((j, index) => {
-
-    const div = document.createElement("div");
-    div.className = "jogador";
-
-    div.innerHTML = `
-        <label>
-            <input type="checkbox" data-index="${index}" ${j.presente ? "checked" : ""}>
+        const label = document.createElement("label");
+        
+        const checkbox = document.createElement("input");
+        checkbox.type = "checkbox";
+        checkbox.dataset.index = index;
+        
+        // FORÇA o estado visual usando setAttribute
+        if (j.presente) {
+            checkbox.setAttribute('checked', 'checked');
+        } else {
+            checkbox.removeAttribute('checked');
+        }
+        // Também define a propriedade
+        checkbox.checked = j.presente;
+        
+        const infoDiv = document.createElement("div");
+        infoDiv.className = "jogador-info";
+        
+        const strong = document.createElement("strong");
+        strong.textContent = j.nome;
+        
+        const metaDiv = document.createElement("div");
+        metaDiv.className = "jogador-meta";
+        
+        if (j.goleiro) {
+            metaDiv.textContent = "🥅 Goleiro";
+        } else {
+            metaDiv.textContent = `⭐ ${j.categoria.toFixed(1)}`;
+        }
+        
+        if (j.menina) {
+            const meninaSpan = document.createElement("em");
+            meninaSpan.className = "tag-menina";
+            meninaSpan.textContent = " menina";
+            metaDiv.appendChild(meninaSpan);
+        }
+        
+        if (j.convidado) {
+            const convidadoSpan = document.createElement("em");
+            convidadoSpan.className = "tag-convidado";
+            convidadoSpan.textContent = " convidado";
+            metaDiv.appendChild(convidadoSpan);
+        }
+        
+        infoDiv.appendChild(strong);
+        infoDiv.appendChild(metaDiv);
+        label.appendChild(checkbox);
+        label.appendChild(infoDiv);
+        div.appendChild(label);
+        listaEl.appendChild(div);
+        
+        // DEBUG: verificar se o checkbox foi marcado
+        console.log(`${j.nome}: presente=${j.presente}, checkbox.checked=${checkbox.checked}, hasAttribute='${checkbox.hasAttribute('checked')}'`);
+        
+        checkbox.addEventListener("change", function(e) {
+            const idx = parseInt(this.dataset.index);
+            jogadores[idx].presente = this.checked;
             
-            <div class="jogador-info">
-                <strong>${j.nome}</strong>
-
-                <div class="jogador-meta">
-                    ${j.goleiro ? "🥅 Goleiro" : `⭐ ${j.categoria.toFixed(1)}`}
-                    ${j.convidado ? `<em class="tag-convidado">convidado</em>` : ""}
-                </div>
-            </div>
-        </label>
-    `;
-
-    listaEl.appendChild(div);
-});
-
-document.querySelectorAll("input[type=checkbox]")
-    .forEach(cb => {
-
-        cb.addEventListener("change", (e) => {
-
-            const i = e.target.dataset.index;
-            jogadores[i].presente = e.target.checked;
-
+            // Sincroniza o atributo com o estado
+            if (this.checked) {
+                this.setAttribute('checked', 'checked');
+            } else {
+                this.removeAttribute('checked');
+            }
+            
             atualizarContador();
-
         });
-
     });
 
-atualizarContador();
-
+    atualizarContador();
 }
 
 // =========================
@@ -111,6 +145,25 @@ return { linhas, goleiros };
 // SORTER
 // =========================
 
+function timeComMenina(time) {
+    return time.jogadores.some(j => j.menina);
+}
+
+function candidatosParaJogador(times, jogador, porTime) {
+    return times
+        .filter(t => {
+            if (jogador.menina && timeComMenina(t)) return false;
+            return t.jogadores.length < porTime;
+        })
+        .sort((a, b) => a.forca - b.forca);
+}
+
+function candidatosOverflow(times, jogador) {
+    return times
+        .filter(t => !jogador.menina || !timeComMenina(t))
+        .sort((a, b) => a.forca - b.forca);
+}
+
 function sortearTimes(linhas, goleiros, porTime) {
 
 const total = linhas.length + goleiros.length;
@@ -127,6 +180,15 @@ if (qtdTimes < 1) {
 // Se só tem 1 time, verificar se tem jogadores suficientes
 if (qtdTimes === 1 && total < 2) {
     alert("É necessário ter pelo menos 2 jogadores para sortear");
+    return null;
+}
+
+const meninasPresentes = linhas.filter(j => j.menina);
+if (meninasPresentes.length > qtdTimes) {
+    alert(
+        `Há ${meninasPresentes.length} meninas presentes, mas só ${qtdTimes} time(s). ` +
+        "Não é possível colocá-las em times separados."
+    );
     return null;
 }
 
@@ -159,24 +221,29 @@ const ordenados = [...linhas]
     .sort((a, b) => b.categoria - a.categoria);
 
 // Distribuir jogadores balanceadamente
-ordenados.forEach(j => {
+for (const j of ordenados) {
 
-    // Encontrar times que ainda podem receber jogadores
-    const candidatos = times
-        .filter(t => t.jogadores.length < porTime)
-        .sort((a, b) => a.forca - b.forca);
+    const candidatos = candidatosParaJogador(times, j, porTime);
 
     if (candidatos.length > 0) {
         candidatos[0].jogadores.push(j);
         candidatos[0].forca += j.categoria;
-    } else {
-        // Se todos os times já atingiram o limite, adicionar ao time com menor força
-        const timeMenorForca = times.reduce((a, b) => a.forca < b.forca ? a : b);
-        timeMenorForca.jogadores.push(j);
-        timeMenorForca.forca += j.categoria;
+        continue;
     }
 
-});
+    const overflow = candidatosOverflow(times, j);
+
+    if (overflow.length === 0) {
+        alert(
+            `Não foi possível separar ${j.nome} das outras meninas em times diferentes.`
+        );
+        return null;
+    }
+
+    overflow[0].jogadores.push(j);
+    overflow[0].forca += j.categoria;
+
+}
 
 // Reordenar times para que o time com menos jogadores seja sempre o último (Time 4)
 reordenarTimes(times);
@@ -216,10 +283,22 @@ imagemContainer.id = "imagemResultado";
 // Adicionar cabeçalho
 const header = document.createElement("div");
 header.className = "resultado-header";
-header.innerHTML = `<h1>⚽ Boleiros de Cristo</h1>`;
+header.innerHTML = `
+    <img
+        src="logo-boleiros.png"
+        alt=""
+        class="resultado-logo"
+        width="52"
+        height="52">
+    <div class="resultado-header-text">
+        <h1>Boleiros de Cristo</h1>
+    </div>
+`;
 imagemContainer.appendChild(header);
 
-// Adicionar os times
+// Adicionar os times em grid 2x2
+const grid = document.createElement("div");
+grid.className = "times-grid";
 times.forEach(t => {
 
     const div = document.createElement("div");
@@ -238,15 +317,19 @@ times.forEach(t => {
     });
 
     div.innerHTML = html;
-    imagemContainer.appendChild(div);
+    grid.appendChild(div);
 });
+imagemContainer.appendChild(grid);
 
-// Adicionar rodapé
+// Adicionar rodapé com logo
 const footer = document.createElement("div");
 footer.className = "resultado-footer";
 const dataAtual = new Date();
 const dataFormatada = dataAtual.toLocaleDateString('pt-BR');
-footer.innerHTML = `<span>📅 ${dataFormatada}</span>`;
+footer.innerHTML = `
+    <img src="logo-boleiros.png" class="resultado-footer-logo" alt="">
+    <span>Boleiros de Cristo · 📅 ${dataFormatada}</span>
+`;
 imagemContainer.appendChild(footer);
 
 resultadoEl.appendChild(imagemContainer);
@@ -288,6 +371,9 @@ btnCompartilhar.style.display = "block";
 
 window.timesAtuais = times;
 
+document.getElementById("resultadoContainer")
+    .scrollIntoView({ behavior: "smooth", block: "start" });
+
 }
 
 // =========================
@@ -323,15 +409,19 @@ function adicionarConvidado() {
         return;
     }
 
+    const menina = document.getElementById("convidadoMenina").checked;
+
     jogadores.push({
         nome,
         categoria,
         goleiro: tipo === "goleiro",
         presente: true,
-        convidado: true
+        convidado: true,
+        menina
     });
 
     document.getElementById("convidadoNome").value = "";
+    document.getElementById("convidadoMenina").checked = false;
 
     renderLista();
 
@@ -361,7 +451,7 @@ function atualizarContador() {
     const total = jogadores.filter(j => j.presente).length;
 
     contadorSelecionados.textContent =
-        `👥 Selecionados: ${total}`;
+        `${total} selecionado${total !== 1 ? "s" : ""}`;
 }
 
 // =========================
@@ -370,9 +460,13 @@ function atualizarContador() {
 
 async function compartilharImagem() {
 
-const el = document.getElementById("resultado");
+const el = document.getElementById("imagemResultado");
 
-const canvas = await html2canvas(el);
+const canvas = await html2canvas(el, {
+    scale: 2,
+    useCORS: true,
+    backgroundColor: "#f4f4f4"
+});
 
 canvas.toBlob(async blob => {
 
