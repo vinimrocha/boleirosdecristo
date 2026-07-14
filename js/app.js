@@ -459,6 +459,7 @@ async function compartilharImagem() {
 
 const el = document.getElementById("imagemResultado");
 
+await document.fonts.ready;
 const canvas = await html2canvas(el, {
     scale: 2,
     useCORS: true,
