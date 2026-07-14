@@ -459,12 +459,19 @@ async function compartilharImagem() {
 
 const el = document.getElementById("imagemResultado");
 
+// html2canvas não suporta bem fontes do sistema (-apple-system, BlinkMacSystemFont)
+// forçar fonte web-safe antes de capturar para evitar espaços sumindo
+const fontOriginal = el.style.fontFamily;
+el.style.fontFamily = "Arial, Helvetica, sans-serif";
+
 await document.fonts.ready;
 const canvas = await html2canvas(el, {
     scale: 2,
     useCORS: true,
     backgroundColor: "#f4f4f4"
 });
+
+el.style.fontFamily = fontOriginal;
 
 canvas.toBlob(async blob => {
 
